@@ -3,3 +3,5 @@
 	name = Buddy Lindsey, Jr.
 [init]
 	defaultBranch = master
+[core]
+    editor = vim
