@@ -147,18 +147,18 @@ function app_check() {
 # So this does a check based on distro so the correct ones get checked to be installed.
 # There is also the case where it is available in a package manager on one distro, but
 # not on the other.
+REQUIRED_APPS=("git" "curl" "wget" "unzip")
 
-UNIVERSAL_NAMED_CONSOLE_APPS=("git" "htop" "exa" "youtube-dl" "pianobar" "curl" "wget" "pianobar" "bat" "unzip")
+UNIVERSAL_NAMED_CONSOLE_APPS=("htop" "exa" "youtube-dl" "pianobar" "pianobar" "bat")
 UNIVERSAL_NAMED_GUI_APPS=("polybar" "rofi" "dunst")
+
 UBUNTU_NAMED_CONSOLE_APPS=("fd-find")
 ARCH_NAMED_CONSOLE_APPS=("fd" "ytop")
-UBUNTU_PACKAGES=("ca-certificates" "gnupg" "lsb-release")
 
-is_console && app_check "${UNIVERSAL_NAMED_CONSOLE_APPS[@]}"
-is_console && is_ubuntu && app_check "${UBUNTU_NAMED_CONSOLE_APPS}"
-is_gui && app_check  "${UNIVERSAL_NAMED_GUI_APPS[@]}"
-is_gui && is_arch && app_check  "${ARCH_NAMED_GUI_APPS[@]}"
+UBUNTU_BASE_PACKAGES=("ca-certificates" "gnupg" "lsb-release", "neovim")
+ARCH_BASE_PACKAGES=("fd" "ytop", "neovim")
 
+app_check "${REQUIRED_APPS[@]}"
 
 if [[ $PREFLIGHT_CHECK_SUCCESS == "false" ]]; then
     echo "Required programs not installed"
@@ -167,10 +167,19 @@ fi
 
 is_console && echo "Installing Applications"
 
+is_ubuntu && install_ubuntu "${UBUNTU_BASE_PACKAGES}"
+is_arch && install_arch "${ARCH_BASE_PACKAGES}"
+
 is_console && is_ubuntu && install_ubuntu "${UNIVERSAL_NAMED_CONSOLE_APPS}"
 is_console && is_ubuntu && install_ubuntu "${UBUNTU_NAMED_CONSOLE_APPS}"
 is_console && is_arch && install_arch "${UNIVERSAL_NAMED_CONSOLE_APPS}"
 is_console && is_arch && install_arch "${ARCH_NAMED_CONSOLE_APPS}"
+
+is_gui && is_ubuntu && install_ubuntu "${UNIVERSAL_NAMED_GUI_APPS[@]}"
+
+is_gui && is_arch && install_arch "${UNIVERSAL_NAMED_GUI_APPS[@]}"
+is_gui && is_arch && install_arch "${ARCH_NAMED_GUI_APPS[@]}"
+
 
 # Do install of console specific apps and configs
 
@@ -193,6 +202,10 @@ is_console && mkdir -p "$OHMYZSH_PLUGINS/buddy/" && console_copy ./files/oh-my-z
 is_console && console_copy ./files/tmux.conf ~/.tmux.conf
 
 # If on ubuntu ytop is not available via apt
+
+if command_exists nvim ; then
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+fi
 
 if is_dev ; then
     RUST_LOCATION="~/.cargo/bin"

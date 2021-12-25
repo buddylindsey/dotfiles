@@ -1,0 +1,6 @@
+{
+    "properties": {
+        "npm.binPath": "/usr/bin/npm"
+    },
+    "diagnostic.displayByAle": true
+}
