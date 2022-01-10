@@ -150,7 +150,7 @@ function app_check() {
 REQUIRED_APPS=("git" "curl" "wget" "unzip")
 
 UNIVERSAL_NAMED_CONSOLE_APPS=("htop" "exa" "youtube-dl" "pianobar" "pianobar" "bat")
-UNIVERSAL_NAMED_GUI_APPS=("polybar" "rofi" "dunst")
+UNIVERSAL_NAMED_GUI_APPS=("rofi" "dunst")
 
 UBUNTU_NAMED_CONSOLE_APPS=("fd-find")
 ARCH_NAMED_CONSOLE_APPS=("fd" "ytop")
@@ -204,6 +204,10 @@ is_console && console_copy ./files/tmux.conf ~/.tmux.conf
 # If on ubuntu ytop is not available via apt
 
 if command_exists nvim ; then
+    if ! [[ -d "$HOME/.config/nvim" ]]; then
+        mkdir -p ~/.config/nvim
+    fi
+    cp -R ./files/nvim ~/.config/
     sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 fi
 
@@ -242,24 +246,45 @@ fi
 
 is_gui && echo "Staring the GUI install"
 
-install_fonts () {
+install_fa() {
     FA_VERSION="5.15.4"
     # Installing fontawesome
     pushd /tmp
     wget "https://use.fontawesome.com/releases/v${FA_VERSION}/fontawesome-free-${FA_VERSION}-desktop.zip"
     unzip "fontawesome-free-${FA_VERSION}-desktop.zip"
     cd fontawesome-free-${FA_VERSION}-desktop/otfs
-    sudo mkdir /usr/local/share/fonts/fa/
-    cp Font* /usr/local/share/fonts/fa
+    is_ubuntu && sudo mkdir /usr/local/share/fonts/fa/
+    is_ubuntu && sudo cp Font* /usr/local/share/fonts/fa
+    is_arch && sudo mkdir /usr/share/fonts/fa/
+    is_arch && sudo cp Font* /usr/share/fonts/fa
     popd
 }
 
-is_gui && install_fonts && echo "Custom fonts installed"
+install_meslo() {
+    MESLO_VERSION="v2.1.0"
+    pushd /tmp
+    mkdir meslo
+    cd meslo
+    wget "https://github.com/ryanoasis/nerd-fonts/releases/download/${MESLO_VERSION}/Meslo.zip"
+    unzip Meslo.zip
+    is_ubuntu && sudo mkdir /usr/local/share/fonts/meslo/
+    is_ubuntu && sudo cp Meslo* /usr/local/share/fonts/meslo
+    is_arch && sudo mkdir /usr/share/fonts/meslo/
+    is_arch && sudo cp Meslo* /usr/share/fonts/meslo
+    popd
+}
+
+is_gui && install_fa && echo "FontAwesome font installed"
+is_gui && install_meslo && echo "Meslo font installed"
 
 
+# install paru
+# configure rust latest stable
 
+# sof-firmware alsa-utils pulseaudio
 
 # To install - gui
+# 0. polybar
 # 1. element.io
 # 2. joplin app
 # 3. Alacritty

@@ -1,20 +1,19 @@
 let g:ale_disable_lsp = 1
 
 call plug#begin(stdpath('data') . '/plugged')
-source ~/.config/nvim/plugins/floaterm.vim
-source ~/.config/nvim/plugins/ale.vim
-source ~/.config/nvim/plugins/blamer.vim
-source ~/.config/nvim/plugins/coc.vim
-source ~/.config/nvim/plugins/nerdcommenter.vim
-source ~/.config/nvim/plugins/nerdtree.vim
-source ~/.config/nvim/plugins/sonokai.vim
-source ~/.config/nvim/plugins/vim-devicons.vim
-source ~/.config/nvim/plugins/salt-vim.vim
-source ~/.config/nvim/plugins/vim-gitgutter.vim
-source ~/.config/nvim/plugins/vim-polyglot.vim
-source ~/.config/nvim/plugins/vim-surround.vim
-source ~/.config/nvim/plugins/fzf.vim
-source ~/.config/nvim/plugins/smoothie.vim
+Plug 'voldikss/vim-floaterm'
+Plug 'w0rp/ale'
+Plug 'apzelos/blamer.nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
+Plug 'ddollar/nerdcommenter'
+Plug 'preservim/nerdtree'
+Plug 'sainnhe/sonokai'
+Plug 'ryanoasis/vim-devicons'
+Plug 'saltstack/salt-vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-surround'
+Plug 'junegunn/fzf'
 call plug#end()
 doautocmd User PlugLoaded
 
@@ -67,3 +66,15 @@ map <leader>p :NERDTreeToggle<CR>
 
 " Clear search highlighting when done searching
 :command C let @/=""
+
+" Ale
+let g:ale_linters = {'rust': ['analyzer'], 'python': 'all'}
+let g:ale_fixers = {'python': ['isort', 'black', 'remove_trailing_lines', 'trim_whitespace'], 'javascript': ['prettier']}
+let g:ale_lsp_suggestions = 1
+let g:ale_fix_on_save = 1
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] [%severity%] %code: %%s'
+
+" Blamer
+let g:blamer_enabled = 1

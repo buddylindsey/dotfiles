@@ -27,7 +27,7 @@ fi
 
 application_rename "ls" "exa"
 alias gcat="/usr/bin/cat"
-
+alias vim="nvim"
 
 activate() {
     POETRY_FILE="`pwd`/pyproject.toml"
